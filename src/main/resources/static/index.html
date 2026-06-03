@@ -1,0 +1,1511 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternUp | Internship Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07080d;
+            --surface: #0f1118;
+            --surface2: #161a24;
+            --border: rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.15);
+            --accent: #5b6ef5;
+            --accent2: #8b5cf6;
+            --accent-glow: rgba(91,110,245,0.25);
+            --text: #f0f2ff;
+            --muted: #6b7280;
+            --dim: #9ca3af;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+            --r: 16px;
+            --rl: 24px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+        button { border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; border-radius: 12px; padding: 11px 20px; font-size: 14px; transition: all .2s; }
+
+        /* NAVBAR */
+        .navbar { position: sticky; top: 0; z-index: 100; background: rgba(7,8,13,.88); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 6%; height: 68px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 10px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; cursor: pointer; letter-spacing: -.5px; }
+        .brand-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)} }
+        .nav-right { display: flex; gap: 10px; align-items: center; }
+        .lang-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--dim); font-family: 'DM Sans',sans-serif; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: all .2s; }
+        .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .user-pill { display: none; align-items: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px 6px 10px; }
+        .user-pill.on { display: flex; }
+        .avatar { width: 30px; height: 30px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; font-family:'Syne',sans-serif; cursor: pointer; }
+        .user-pill span { font-size: 13px; font-weight: 600; color: var(--dim); }
+        .btn-logout { background: transparent; border: 1px solid rgba(239,68,68,.3); color: var(--red); font-size: 13px; padding: 7px 14px; border-radius: 999px; }
+        .btn-logout:hover { background: rgba(239,68,68,.1); }
+
+        /* BUTTONS */
+        .btn-primary { background: linear-gradient(135deg,var(--accent),var(--accent2)); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(91,110,245,.4); }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--dim); }
+        .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface2); }
+        .btn-soft { background: rgba(91,110,245,.12); border: 1px solid rgba(91,110,245,.2); color: var(--accent); }
+        .btn-soft:hover { background: rgba(91,110,245,.2); }
+        .btn-success { background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.3); color: var(--green); }
+        .btn-success:hover { background: rgba(16,185,129,.25); }
+        .btn-warning { background: rgba(245,158,11,.15); border: 1px solid rgba(245,158,11,.3); color: var(--yellow); }
+        .btn-warning:hover { background: rgba(245,158,11,.25); }
+        .btn-danger { background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3); color: var(--red); }
+        .btn-danger:hover { background: rgba(239,68,68,.25); }
+
+        /* INPUTS */
+        input, select, textarea { width: 100%; padding: 13px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); font-size: 14px; font-family: 'DM Sans',sans-serif; color: var(--text); outline: none; transition: all .2s; }
+        input::placeholder, textarea::placeholder { color: var(--muted); }
+        select option { background: var(--surface2); }
+        textarea { resize: vertical; min-height: 90px; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        input[type="file"] { padding: 10px 16px; cursor: pointer; }
+
+        /* HERO */
+        .hero { padding: 100px 6% 80px; position: relative; overflow: hidden; }
+        .glow1 { position: absolute; width: 700px; height: 700px; background: radial-gradient(circle,rgba(91,110,245,.12),transparent 60%); top: -200px; left: -100px; pointer-events: none; }
+        .glow2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle,rgba(139,92,246,.08),transparent 60%); bottom: -100px; right: 5%; pointer-events: none; }
+        .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: 60px; align-items: center; }
+        .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(91,110,245,.1); border: 1px solid rgba(91,110,245,.2); padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: .5px; margin-bottom: 28px; }
+        .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; }
+        .hero h1 { font-size: 60px; line-height: 1.0; letter-spacing: -2.5px; font-weight: 800; margin-bottom: 24px; }
+        .hero h1 em { font-style: normal; background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .hero > .hero-inner > div > p { color: var(--muted); font-size: 17px; line-height: 1.75; max-width: 520px; margin-bottom: 36px; }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .hero-actions .btn-primary, .hero-actions .btn-ghost { padding: 14px 28px; font-size: 15px; }
+
+        /* HERO CARD */
+        .hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 28px; position: relative; overflow: hidden; }
+        .hero-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(91,110,245,.05),transparent); pointer-events:none; }
+        .hero-card-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .hc-icon { width:40px; height:40px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+        .hero-card h3 { font-size: 18px; font-weight: 700; }
+        .hero-card > p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+        .stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+        .stat-box strong { display: block; font-family:'Syne',sans-serif; font-size: 32px; font-weight: 800; background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .stat-box span { color: var(--muted); font-size: 12px; font-weight: 600; }
+        .float-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--dim); margin-top: 12px; animation: float 4s ease-in-out infinite; }
+        .float-card:nth-child(3) { animation-delay: 1.5s; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        .fc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+        /* SECTIONS */
+        .section { padding: 60px 6%; }
+        .sec-hd { margin-bottom: 32px; }
+        .sec-hd h2 { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+        .sec-hd p { color: var(--muted); font-size: 15px; }
+        .divider { height: 1px; background: linear-gradient(90deg,transparent,var(--border),transparent); margin: 0 6%; }
+
+        /* FEATURES */
+        .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: 32px; }
+        .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 28px; transition: border-color .3s; }
+        .feat-card:hover { border-color: var(--border-hover); }
+        .feat-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:16px; }
+        .feat-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .feat-card p { color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+        /* SEARCH */
+        .search-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 20px; margin-bottom: 28px; }
+        .search-grid { display: grid; grid-template-columns: 1fr 1fr 140px; gap: 12px; }
+
+        /* CARD */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 24px; }
+        .card h2 { font-size: 22px; margin-bottom: 20px; font-weight: 700; }
+
+        /* JOBS */
+        .jobs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+        .job-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 22px; transition: all .3s; position: relative; overflow: hidden; }
+        .job-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); opacity:0; transition:opacity .3s; }
+        .job-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,0,0,.3); }
+        .job-card:hover::before { opacity: 1; }
+        .job-card h3 { font-size: 18px; font-weight: 700; margin: 12px 0 6px; }
+        .job-card .jc { color: var(--dim); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .job-card .jd { color: var(--muted); font-size: 12px; margin-bottom: 16px; }
+        .job-card-tag { display: inline-block; background: rgba(91,110,245,.1); border: 1px solid rgba(91,110,245,.2); color: var(--accent); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .3px; margin-bottom: 10px; }
+
+        /* BADGES */
+        .badge { display: inline-block; padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+        .APPLIED { background: rgba(91,110,245,.15); color: #818cf8; border: 1px solid rgba(91,110,245,.25); }
+        .INTERVIEW { background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+        .OFFER { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.25); }
+        .REJECTED { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.25); }
+        .PENDING { background: rgba(245,158,11,.1); color: #fbbf24; border: 1px solid rgba(245,158,11,.2); }
+
+        /* PANELS */
+        .panel { display: none; padding: 40px 6%; }
+        .panel.active { display: block; }
+
+        /* DASH HEADER */
+        .dash-hd { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 28px 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+        .dash-hd::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(91,110,245,.06),transparent); }
+        .dash-hd-inner { position: relative; }
+        .dash-hd h1 { font-size: 30px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 6px; }
+        .dash-hd p { color: var(--muted); font-size: 14px; }
+
+        /* STATS */
+        .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+        .sstat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 20px; }
+        .sstat span { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+        .sstat strong { display: block; font-family:'Syne',sans-serif; font-size: 36px; font-weight: 800; margin-top: 8px; background: linear-gradient(135deg,var(--text),var(--dim)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        /* ADMIN GRID */
+        .admin-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 20px; }
+        .form-grid { display: grid; gap: 12px; }
+
+        /* TABLE */
+        .tbl-wrap { overflow-x: auto; border-radius: var(--rl); border: 1px solid var(--border); margin-top: 16px; }
+        table { width: 100%; border-collapse: collapse; background: var(--surface); }
+        th { background: var(--surface2); color: var(--muted); padding: 13px 16px; text-align: left; font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--dim); }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: var(--surface2); }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* TABS NAV inside panels */
+        .panel-tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 5px; width: fit-content; }
+        .panel-tab { background: transparent; color: var(--muted); padding: 9px 18px; font-size: 13px; border-radius: 10px; }
+        .panel-tab.active { background: var(--accent); color: white; }
+
+        /* PROFILE */
+        .profile-grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+        .profile-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); padding: 28px; text-align: center; }
+        .profile-avatar-lg { width: 80px; height: 80px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; font-family:'Syne',sans-serif; margin: 0 auto 16px; }
+        .profile-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .profile-role { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+        .profile-complete { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-top: 16px; }
+        .profile-complete span { color: var(--muted); font-size: 12px; display: block; margin-bottom: 8px; }
+        .progress-bar { height: 6px; background: var(--surface); border-radius: 99px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 99px; transition: width .5s ease; }
+        .cv-status { margin-top: 16px; padding: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; font-size: 13px; color: var(--dim); }
+        .cv-status.uploaded { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.08); color: var(--green); }
+
+        /* COMPANY REQUEST */
+        .creq { background: var(--surface2); border: 1px solid var(--border); padding: 16px; border-radius: var(--r); margin-bottom: 12px; }
+        .creq h3 { font-size: 16px; margin-bottom: 4px; }
+        .creq p { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-card { background: var(--surface); border: 1px solid var(--border); width: 100%; max-width: 480px; border-radius: 28px; padding: 30px; box-shadow: 0 40px 80px rgba(0,0,0,.6); animation: mIn .25s cubic-bezier(.34,1.56,.64,1); max-height: 90vh; overflow-y: auto; }
+        @keyframes mIn { from{transform:scale(.92) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+        .modal-card h2 { font-size: 26px; font-weight: 800; margin-bottom: 20px; }
+        .tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 5px; }
+        .tab-btn { background: transparent; color: var(--muted); padding: 9px; font-size: 13px; border-radius: 10px; }
+        .tab-btn.active { background: var(--accent); color: white; }
+        .lform { display: none; }
+        .lform.active { display: grid; gap: 12px; }
+        .modal-sep { display: flex; align-items: center; gap: 12px; margin: 4px 0; }
+        .modal-sep span { color: var(--muted); font-size: 12px; white-space: nowrap; }
+        .modal-sep::before,.modal-sep::after { content:''; flex:1; height:1px; background:var(--border); }
+
+        /* APPLY MODAL */
+        .apply-modal-card { max-width: 540px; }
+        .apply-section { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 12px; }
+        .apply-section h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--dim); letter-spacing: .3px; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* TOAST */
+        .toast { display: none; position: fixed; bottom: 28px; right: 28px; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 14px 20px; border-radius: 14px; z-index: 1200; box-shadow: 0 20px 50px rgba(0,0,0,.5); font-size: 14px; font-weight: 500; max-width: 340px; animation: tIn .3s ease; }
+        @keyframes tIn { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+        .empty { color: var(--muted); text-align: center; padding: 32px; font-size: 14px; }
+        .footer { padding: 32px 6%; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-row span:first-child { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .3px; }
+        .info-row span:last-child { color: var(--text); font-weight: 500; }
+        .app-item { background: var(--surface2); border: 1px solid var(--border); padding: 16px; border-radius: var(--r); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .app-item-left h4 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+        .app-item-left p { color: var(--muted); font-size: 12px; }
+
+        @media(max-width:950px) {
+            .hero-inner,.admin-grid,.search-grid,.profile-grid { grid-template-columns:1fr; }
+            .jobs-grid,.stats,.feat-grid { grid-template-columns:1fr; }
+            .hero h1 { font-size:40px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="brand" onclick="showHome()">
+        <div class="brand-dot"></div>
+        InternUp
+    </div>
+    <div class="nav-right">
+        <button class="lang-btn" onclick="toggleLang()" id="langBtn">TR</button>
+        <div class="user-pill" id="userPill">
+            <div class="avatar" id="userAvatar" onclick="goToProfile()" title="Profile">U</div>
+            <span id="pillLabel">User</span>
+            <button class="btn-logout" onclick="logout()" id="logoutBtn">Sign Out</button>
+        </div>
+        <button class="btn-ghost" id="loginNavBtn" onclick="openLoginModal()">Login</button>
+        <button class="btn-primary" id="registerNavBtn" onclick="openRegisterModal()" style="padding:10px 18px;font-size:13px">Register</button>
+    </div>
+</nav>
+
+<!-- HOME -->
+<main id="homePage">
+    <section class="hero">
+        <div class="glow1"></div>
+        <div class="glow2"></div>
+        <div class="hero-inner">
+            <div>
+                <div class="hero-tag" id="i-hero_tag">Role-Based Internship Management</div>
+                <h1><em id="i-hero_em">Find, manage</em><br><span id="i-hero_span">and track internships.</span></h1>
+                <p id="i-hero_p">InternUp is a modern internship platform where students discover opportunities, companies request postings, and admins manage the full process.</p>
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="openRegisterModal()" id="i-get_started">Get Started</button>
+                    <button class="btn-ghost" onclick="scrollToJobs()" id="i-view_jobs">View Internships</button>
+                </div>
+            </div>
+            <div>
+                <div class="hero-card">
+                    <div class="hero-card-hd">
+                        <div class="hc-icon">🚀</div>
+                        <h3 id="i-platform">Platform Overview</h3>
+                    </div>
+                    <p id="i-platform_desc">Spring Boot REST API powered role-based system.</p>
+                    <div class="stat-grid">
+                        <div class="stat-box"><strong id="heroTotal">0</strong><span id="i-total_jobs">Total Jobs</span></div>
+                        <div class="stat-box"><strong id="heroApplied">0</strong><span id="i-applied">Applied</span></div>
+                        <div class="stat-box"><strong id="heroInterview">0</strong><span id="i-interview">Interview</span></div>
+                        <div class="stat-box"><strong id="heroOffer">0</strong><span id="i-offer">Offer</span></div>
+                    </div>
+                </div>
+                <div class="float-card"><div class="fc-dot" style="background:#34d399"></div><span id="i-fc1">New listings added weekly</span></div>
+                <div class="float-card"><div class="fc-dot" style="background:#818cf8"></div><span id="i-fc2">Track applications in real-time</span></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="section">
+        <div class="sec-hd">
+            <h2 id="i-feat_title">Everything you need</h2>
+            <p id="i-feat_sub">Three roles, one seamless platform.</p>
+        </div>
+        <div class="feat-grid">
+            <div class="feat-card">
+                <div class="feat-icon" style="background:rgba(91,110,245,.15)">🎓</div>
+                <h3 id="i-feat1_h">For Students</h3>
+                <p id="i-feat1_p">Browse open positions, filter by company or role, and apply directly through the platform with one click.</p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon" style="background:rgba(16,185,129,.15)">🏢</div>
+                <h3 id="i-feat2_h">For Companies</h3>
+                <p id="i-feat2_p">Submit internship posting requests. Once approved by an admin, your listing goes live for thousands of students.</p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon" style="background:rgba(245,158,11,.15)">⚙️</div>
+                <h3 id="i-feat3_h">For Admins</h3>
+                <p id="i-feat3_p">Full CRUD control over all listings, approve or reject company requests, and monitor platform-wide stats.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="section" id="jobsSection">
+        <div class="sec-hd">
+            <h2 id="i-opp_title">Internship Opportunities</h2>
+            <p id="i-opp_sub">Search by company or position.</p>
+        </div>
+        <div class="search-panel">
+            <div class="search-grid">
+                <input id="publicCompanySearch" placeholder="Search by company">
+                <input id="publicPositionSearch" placeholder="Search by position">
+                <button class="btn-primary" onclick="publicSearch()" id="i-search_btn">Search</button>
+            </div>
+        </div>
+        <div class="jobs-grid" id="publicJobsGrid"></div>
+    </section>
+
+    <div class="footer">© 2025 InternUp · Built with Spring Boot</div>
+</main>
+
+<!-- USER PANEL -->
+<section class="panel" id="userPanel">
+    <div class="dash-hd">
+        <div class="dash-hd-inner">
+            <h1 id="i-user_dash">User Dashboard</h1>
+            <p id="i-user_desc">Search and apply to internship opportunities.</p>
+        </div>
+    </div>
+    <div class="panel-tabs">
+        <button class="panel-tab active" onclick="switchUserTab('browse')" id="utab-browse" id="i-tab_browse">Browse Internships</button>
+        <button class="panel-tab" onclick="switchUserTab('myapps')" id="utab-myapps" id="i-tab_myapps">My Applications</button>
+        <button class="panel-tab" onclick="switchUserTab('profile')" id="utab-profile" id="i-tab_profile">My Profile</button>
+    </div>
+    <!-- Browse tab -->
+    <div id="user-tab-browse">
+        <div class="search-panel">
+            <div class="search-grid">
+                <input id="userCompanySearch" placeholder="Company name">
+                <input id="userPositionSearch" placeholder="Position keyword">
+                <button class="btn-primary" onclick="userSearch()" id="i-user_search">Search</button>
+            </div>
+        </div>
+        <div class="jobs-grid" id="userJobsGrid"></div>
+    </div>
+    <!-- My applications tab -->
+    <div id="user-tab-myapps" style="display:none">
+        <div id="myApplicationsList"></div>
+    </div>
+    <!-- Profile tab -->
+    <div id="user-tab-profile" style="display:none">
+        <div class="profile-grid">
+            <div>
+                <div class="profile-sidebar">
+                    <div class="profile-avatar-lg" id="profileAvatarLg">U</div>
+                    <div class="profile-name" id="profileNameDisplay">—</div>
+                    <div class="profile-role" id="profileRoleDisplay">Student</div>
+                    <div class="profile-complete">
+                        <span id="i-profile_complete">Profile Completeness</span>
+                        <div class="progress-bar"><div class="progress-fill" id="profileProgress" style="width:0%"></div></div>
+                        <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:6px" id="profilePct">0%</div>
+                    </div>
+                    <div class="cv-status" id="cvStatus" id="i-no_cv">📄 No CV uploaded</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2 id="i-edit_profile">Edit Profile</h2>
+                <div class="form-grid">
+                    <div class="field-row">
+                        <input id="profileFirstName" placeholder="First Name" oninput="updateProfilePreview()">
+                        <input id="profileLastName" placeholder="Last Name" oninput="updateProfilePreview()">
+                    </div>
+                    <input id="profileEmail" type="email" placeholder="Email Address" oninput="updateProfilePreview()">
+                    <input id="profilePhone" placeholder="Phone Number" oninput="updateProfilePreview()">
+                    <input id="profileUniversity" placeholder="University" oninput="updateProfilePreview()">
+                    <input id="profileDepartment" placeholder="Department / Major" oninput="updateProfilePreview()">
+                    <input id="profileGradYear" placeholder="Expected Graduation Year" oninput="updateProfilePreview()">
+                    <textarea id="profileBio" placeholder="Short bio / About you..." oninput="updateProfilePreview()"></textarea>
+                    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px">
+                        <div style="font-size:13px;color:var(--dim);margin-bottom:10px;font-weight:600" id="i-upload_cv">📎 Upload CV (PDF)</div>
+                        <input type="file" id="cvFile" accept=".pdf,.doc,.docx" onchange="handleCVUpload()">
+                    </div>
+                    <button class="btn-primary" onclick="saveProfile()" id="i-save_profile">Save Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ADMIN PANEL -->
+<section class="panel" id="adminPanel">
+    <div class="dash-hd">
+        <div class="dash-hd-inner">
+            <h1 id="i-admin_dash">Admin Dashboard</h1>
+            <p id="i-admin_desc">Create, update, delete records and review company requests.</p>
+        </div>
+    </div>
+    <div class="stats">
+        <div class="sstat"><span id="i-total_lbl">Total</span><strong id="adminTotal">0</strong></div>
+        <div class="sstat"><span id="i-app_lbl">Applied</span><strong id="adminApplied">0</strong></div>
+        <div class="sstat"><span id="i-itv_lbl">Interview</span><strong id="adminInterview">0</strong></div>
+        <div class="sstat"><span id="i-off_lbl">Offer</span><strong id="adminOffer">0</strong></div>
+    </div>
+
+    <div class="panel-tabs">
+        <button class="panel-tab active" onclick="switchAdminTab('internships')" id="atab-internships">Internships</button>
+        <button class="panel-tab" onclick="switchAdminTab('requests')" id="atab-requests">Company Requests</button>
+        <button class="panel-tab" onclick="switchAdminTab('applications')" id="atab-applications">Applications</button>
+    </div>
+
+    <!-- Internships tab -->
+    <div id="admin-tab-internships">
+        <div class="admin-grid">
+            <div class="card">
+                <h2 id="adminFormTitle">Add New Internship</h2>
+                <input type="hidden" id="adminInternshipId">
+                <div class="form-grid">
+                    <input id="adminCompanyName" placeholder="Company Name">
+                    <input id="adminPosition" placeholder="Position">
+                    <select id="adminStatus">
+                        <option value="" disabled selected>— Select Status —</option>
+                        <option value="APPLIED">Applied</option>
+                        <option value="INTERVIEW">Interview</option>
+                        <option value="OFFER">Offer</option>
+                        <option value="REJECTED">Rejected</option>
+                    </select>
+                    <button class="btn-primary" onclick="saveInternship()" id="i-save_btn">Save Internship</button>
+                    <button class="btn-ghost" onclick="clearAdminForm()" id="i-clear_btn">Clear Form</button>
+                </div>
+            </div>
+            <div class="card" style="overflow:auto;max-height:420px">
+                <h2 id="i-intern_records">Internship Records</h2>
+                <div class="tbl-wrap" style="border:none;border-radius:0">
+                    <table>
+                        <thead><tr>
+                            <th>ID</th>
+                            <th id="i-th_company">Company</th>
+                            <th id="i-th_pos">Position</th>
+                            <th id="i-th_date">Date</th>
+                            <th id="i-th_status">Status</th>
+                            <th id="i-th_actions">Actions</th>
+                        </tr></thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Requests tab -->
+    <div id="admin-tab-requests" style="display:none">
+        <div class="card">
+            <h2 id="i-company_reqs">Company Posting Requests</h2>
+            <div id="companyRequestsList" style="margin-top:16px"></div>
+        </div>
+    </div>
+
+    <!-- Applications tab -->
+    <div id="admin-tab-applications" style="display:none">
+        <div class="card">
+            <h2 id="i-all_apps">All Applications</h2>
+            <div class="tbl-wrap">
+                <table>
+                    <thead><tr>
+                        <th id="i-th_app_name">Applicant</th>
+                        <th id="i-th_app_email">Email</th>
+                        <th id="i-th_app_uni">University</th>
+                        <th id="i-th_app_pos">Position</th>
+                        <th id="i-th_app_company">Company</th>
+                        <th id="i-th_app_date">Date</th>
+                        <th>CV</th>
+                        <th id="i-th_app_status">Status</th>
+                    </tr></thead>
+                    <tbody id="adminApplicationsBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPANY PANEL -->
+<section class="panel" id="companyPanel">
+    <div class="dash-hd">
+        <div class="dash-hd-inner">
+            <h1 id="i-comp_dash">Company Dashboard</h1>
+            <p id="i-comp_desc">Send internship posting requests for admin review.</p>
+        </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="card">
+            <h2 id="i-create_req">Create Posting Request</h2>
+            <div class="form-grid">
+                <input id="requestCompanyName" placeholder="Company Name">
+                <input id="requestPosition" placeholder="Position">
+                <textarea id="requestDescription" placeholder="Short description..."></textarea>
+                <button class="btn-primary" onclick="sendCompanyRequest()" id="i-send_req">Send Request</button>
+            </div>
+        </div>
+        <div class="card">
+            <h2 id="i-sent_reqs">Your Sent Requests</h2>
+            <div id="companySentRequests"></div>
+        </div>
+    </div>
+</section>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+    <div class="modal-card">
+        <h2 id="i-modal_login">Login</h2>
+        <div class="tabs">
+            <button class="tab-btn active" id="userTab" onclick="switchTab('user')">User</button>
+            <button class="tab-btn" id="adminTab" onclick="switchTab('admin')">Admin</button>
+            <button class="tab-btn" id="companyTab" onclick="switchTab('company')">Company</button>
+        </div>
+        <div class="lform active" id="userLoginForm">
+            <input id="userUsername" placeholder="Username">
+            <input id="userPassword" type="password" placeholder="Password">
+            <button class="btn-primary" onclick="loginAsUser()" id="i-login_user">Login as User</button>
+            <div class="modal-sep"><span id="i-or_text">or</span></div>
+            <button class="btn-ghost" onclick="closeLoginModal();openRegisterModal()" id="i-goto_register">Create an account</button>
+        </div>
+        <div class="lform" id="adminLoginForm">
+            <input id="adminUsername" placeholder="Username">
+            <input id="adminPassword" type="password" placeholder="Password">
+            <button class="btn-primary" onclick="loginAsAdmin()" id="i-login_admin">Login as Admin</button>
+        </div>
+        <div class="lform" id="companyLoginForm">
+            <input id="companyNameLogin" placeholder="Company Name">
+            <input id="companyEmailLogin" placeholder="Company Email">
+            <button class="btn-primary" onclick="loginAsCompany()" id="i-login_company">Continue as Company</button>
+        </div>
+        <button class="btn-ghost" style="margin-top:16px;width:100%" onclick="closeLoginModal()" id="i-close_modal">Close</button>
+    </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal" id="registerModal">
+    <div class="modal-card">
+        <h2 id="i-modal_register">Create Account</h2>
+        <div class="lform active" style="gap:12px;display:grid" id="registerForm">
+            <div class="field-row">
+                <input id="regFirstName" placeholder="First Name">
+                <input id="regLastName" placeholder="Last Name">
+            </div>
+            <input id="regUsername" placeholder="Username">
+            <input id="regEmail" type="email" placeholder="Email Address">
+            <input id="regPassword" type="password" placeholder="Password">
+            <input id="regPassword2" type="password" placeholder="Confirm Password">
+            <input id="regUniversity" placeholder="University">
+            <input id="regDepartment" placeholder="Department / Major">
+            <button class="btn-primary" onclick="registerUser()" id="i-register_btn">Create Account</button>
+            <div class="modal-sep"><span id="i-or_text2">or</span></div>
+            <button class="btn-ghost" onclick="closeRegisterModal();openLoginModal()" id="i-goto_login">Already have an account? Login</button>
+        </div>
+        <button class="btn-ghost" style="margin-top:16px;width:100%" onclick="closeRegisterModal()" id="i-close_register">Close</button>
+    </div>
+</div>
+
+<!-- APPLY MODAL -->
+<div class="modal" id="applyModal">
+    <div class="modal-card apply-modal-card">
+        <h2 id="applyModalTitle">Apply for Position</h2>
+        <div id="applyModalContent"></div>
+        <div style="display:flex;gap:10px;margin-top:20px">
+            <button class="btn-primary" onclick="submitApplication()" id="i-submit_apply" style="flex:1">Submit Application</button>
+            <button class="btn-ghost" onclick="closeApplyModal()" id="i-cancel_apply">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const baseUrl   = "http://localhost:8080/api/internships";
+    const adminAuth = "Basic " + btoa("admin:1234");
+    const userAuth  = "Basic " + btoa("user:1234");
+    let currentData = [];
+    let currentRole = null;
+    let lang = "en";
+    let pendingApplyJob = null; // {companyName, position, id}
+
+    // ── LANGUAGE ───────────────────────────────────────────────────────────────
+    const TR = {
+        hero_tag:"Rol Tabanlı Staj Yönetimi", hero_em:"Stajları bul,", hero_span:"yönet ve takip et.",
+        hero_p:"InternUp; öğrencilerin fırsatları keşfettiği, şirketlerin ilan talebinde bulunduğu ve yöneticilerin süreci yönettiği modern bir staj platformudur.",
+        get_started:"Başla", view_jobs:"Stajları Gör", platform:"Platform Özeti",
+        platform_desc:"Spring Boot REST API destekli rol tabanlı sistem.",
+        total_jobs:"Toplam İlan", applied:"Başvuruldu", interview:"Mülakat", offer:"Teklif",
+        fc1:"Haftalık yeni ilanlar ekleniyor", fc2:"Başvurularını anlık takip et",
+        feat_title:"İhtiyacın olan her şey", feat_sub:"Üç rol, tek kesintisiz platform.",
+        feat1_h:"Öğrenciler İçin", feat1_p:"Açık pozisyonlara göz at, şirket veya role göre filtrele, tek tıkla başvur.",
+        feat2_h:"Şirketler İçin", feat2_p:"Staj ilanı talebi gönder. Admin onayladıktan sonra ilanın anında yayınlanır.",
+        feat3_h:"Yöneticiler İçin", feat3_p:"Tüm ilanlar üzerinde tam CRUD kontrolü, şirket taleplerini onayla/reddet ve istatistikleri izle.",
+        opp_title:"Staj Fırsatları", opp_sub:"Şirket veya pozisyona göre ara.",
+        search_btn:"Ara", user_dash:"Kullanıcı Paneli", user_desc:"Staj fırsatlarını ara ve başvur.",
+        user_search:"Ara", admin_dash:"Yönetici Paneli",
+        admin_desc:"Staj kayıtlarını ekle, güncelle, sil ve şirket taleplerini incele.",
+        total_lbl:"Toplam", app_lbl:"Başvuruldu", itv_lbl:"Mülakat", off_lbl:"Teklif",
+        add_update:"Staj Ekle / Güncelle", save_btn:"Kaydet", clear_btn:"Formu Temizle",
+        company_reqs:"Şirket İlan Talepleri", intern_records:"Staj Kayıtları",
+        all_apps:"Tüm Başvurular",
+        th_company:"Şirket", th_pos:"Pozisyon", th_date:"Tarih", th_status:"Durum", th_actions:"İşlemler",
+        th_app_name:"Başvuran", th_app_email:"E-posta", th_app_uni:"Üniversite",
+        th_app_pos:"Pozisyon", th_app_company:"Şirket", th_app_date:"Tarih", th_app_status:"Durum",
+        comp_dash:"Şirket Paneli", comp_desc:"Yönetici incelemesi için staj ilanı talebi gönderin.",
+        create_req:"İlan Talebi Oluştur", send_req:"Talep Gönder", sent_reqs:"Gönderilen Talepleriniz",
+        modal_login:"Giriş Yap", modal_register:"Hesap Oluştur",
+        register_btn:"Hesap Oluştur", goto_login:"Zaten hesabın var mı? Giriş Yap",
+        goto_register:"Hesap oluştur", or_text:"veya", or_text2:"veya",
+        login_user:"Kullanıcı Girişi", login_admin:"Yönetici Girişi", login_company:"Şirket Olarak Devam",
+        close_modal:"Kapat", close_register:"Kapat",
+        tab_browse:"Stajlara Göz At", tab_myapps:"Başvurularım", tab_profile:"Profilim",
+        edit_profile:"Profili Düzenle", save_profile:"Profili Kaydet",
+        upload_cv:"📎 CV Yükle (PDF)", profile_complete:"Profil Tamamlanma",
+        no_cv:"📄 CV yüklenmedi",
+        submit_apply:"Başvuruyu Gönder", cancel_apply:"Vazgeç",
+        logout_btn:"Çıkış Yap", login_nav:"Giriş Yap",
+        msg_login_user:"Hoş geldiniz! Kullanıcı olarak giriş yapıldı.",
+        msg_login_admin:"Hoş geldiniz! Yönetici olarak giriş yapıldı.",
+        msg_login_comp:"Şirket paneli açıldı.",
+        msg_invalid:"Geçersiz kimlik bilgileri.",
+        msg_fill_comp:"Lütfen şirket bilgilerini girin.",
+        msg_fill_all:"Lütfen tüm alanları doldurun.",
+        msg_req_sent:"İlan talebi yöneticiye gönderildi.",
+        msg_approved:"Talep onaylandı ve yayınlandı.",
+        msg_rejected:"Talep reddedildi.",
+        msg_saved:"Staj başarıyla kaydedildi.",
+        msg_save_fail:"Kayıt işlemi başarısız.",
+        msg_deleted:"Staj silindi.",
+        msg_del_fail:"Silme işlemi başarısız.",
+        msg_apply:"Başvuru gönderildi!",
+        msg_app_fail:"Onay işlemi başarısız.",
+        msg_logout:"Çıkış yapıldı.",
+        msg_profile_saved:"Profil kaydedildi.",
+        msg_registered:"Hesap oluşturuldu! Giriş yapabilirsiniz.",
+        msg_pw_mismatch:"Şifreler eşleşmiyor.",
+        msg_fill_profile:"Başvurabilmek için önce profilinizi tamamlayın.",
+        msg_fill_req_fields:"Zorunlu alanları doldurun.",
+        msg_cv_loaded:"CV yüklendi:",
+        btn_apply:"Başvur", btn_login_req:"Başvurmak için Giriş Yap",
+        btn_approve:"Onayla", btn_reject:"Reddet",
+        btn_edit:"Düzenle", btn_delete:"Sil",
+        no_intern:"Staj bulunamadı.", no_req:"Bekleyen talep yok.",
+        no_sent:"Henüz talep gönderilmedi.", no_apps:"Henüz başvuru yok.",
+        open_pos:"Açık Pozisyon",
+    };
+
+    const EN = {
+        hero_tag:"Role-Based Internship Management", hero_em:"Find, manage", hero_span:"and track internships.",
+        hero_p:"InternUp is a modern internship platform where students discover opportunities, companies request postings, and admins manage the full process.",
+        get_started:"Get Started", view_jobs:"View Internships", platform:"Platform Overview",
+        platform_desc:"Spring Boot REST API powered role-based system.",
+        total_jobs:"Total Jobs", applied:"Applied", interview:"Interview", offer:"Offer",
+        fc1:"New listings added weekly", fc2:"Track applications in real-time",
+        feat_title:"Everything you need", feat_sub:"Three roles, one seamless platform.",
+        feat1_h:"For Students", feat1_p:"Browse open positions, filter by company or role, and apply directly through the platform.",
+        feat2_h:"For Companies", feat2_p:"Submit internship posting requests. Once approved, your listing goes live instantly.",
+        feat3_h:"For Admins", feat3_p:"Full CRUD control, approve/reject company requests, and monitor platform-wide stats.",
+        opp_title:"Internship Opportunities", opp_sub:"Search by company or position.",
+        search_btn:"Search", user_dash:"User Dashboard", user_desc:"Search and apply to internship opportunities.",
+        user_search:"Search", admin_dash:"Admin Dashboard",
+        admin_desc:"Create, update, delete records and review company requests.",
+        total_lbl:"Total", app_lbl:"Applied", itv_lbl:"Interview", off_lbl:"Offer",
+        add_update:"Add / Update Internship", save_btn:"Save Internship", clear_btn:"Clear Form",
+        company_reqs:"Company Posting Requests", intern_records:"Internship Records",
+        all_apps:"All Applications",
+        th_company:"Company", th_pos:"Position", th_date:"Date", th_status:"Status", th_actions:"Actions",
+        th_app_name:"Applicant", th_app_email:"Email", th_app_uni:"University",
+        th_app_pos:"Position", th_app_company:"Company", th_app_date:"Date", th_app_status:"Status",
+        comp_dash:"Company Dashboard", comp_desc:"Send internship posting requests for admin review.",
+        create_req:"Create Posting Request", send_req:"Send Request", sent_reqs:"Your Sent Requests",
+        modal_login:"Login", modal_register:"Create Account",
+        register_btn:"Create Account", goto_login:"Already have an account? Login",
+        goto_register:"Create an account", or_text:"or", or_text2:"or",
+        login_user:"Login as User", login_admin:"Login as Admin", login_company:"Continue as Company",
+        close_modal:"Close", close_register:"Close",
+        tab_browse:"Browse Internships", tab_myapps:"My Applications", tab_profile:"My Profile",
+        edit_profile:"Edit Profile", save_profile:"Save Profile",
+        upload_cv:"📎 Upload CV (PDF)", profile_complete:"Profile Completeness",
+        no_cv:"📄 No CV uploaded",
+        submit_apply:"Submit Application", cancel_apply:"Cancel",
+        logout_btn:"Sign Out", login_nav:"Login",
+        msg_login_user:"Welcome! Logged in as User.",
+        msg_login_admin:"Welcome! Logged in as Admin.",
+        msg_login_comp:"Company panel opened.",
+        msg_invalid:"Invalid credentials.",
+        msg_fill_comp:"Please enter company information.",
+        msg_fill_all:"Please fill all fields.",
+        msg_req_sent:"Posting request sent to admin.",
+        msg_approved:"Request approved and published.",
+        msg_rejected:"Request rejected.",
+        msg_saved:"Internship saved successfully.",
+        msg_save_fail:"Save operation failed.",
+        msg_deleted:"Internship deleted.",
+        msg_del_fail:"Delete failed.",
+        msg_apply:"Application submitted!",
+        msg_app_fail:"Approval failed.",
+        msg_logout:"Signed out.",
+        msg_profile_saved:"Profile saved.",
+        msg_registered:"Account created! You can now log in.",
+        msg_pw_mismatch:"Passwords do not match.",
+        msg_fill_profile:"Please complete your profile before applying.",
+        msg_fill_req_fields:"Please fill required fields.",
+        msg_cv_loaded:"CV loaded:",
+        btn_apply:"Apply", btn_login_req:"Login to Apply",
+        btn_approve:"Approve", btn_reject:"Reject",
+        btn_edit:"Edit", btn_delete:"Delete",
+        no_intern:"No internship found.", no_req:"No pending requests.",
+        no_sent:"No requests sent yet.", no_apps:"No applications yet.",
+        open_pos:"Open Position",
+    };
+
+    function t(k) { return (lang==="tr"?TR:EN)[k] || k; }
+
+    function applyLang() {
+        const D = lang==="tr"?TR:EN;
+        Object.keys(D).forEach(k => {
+            const el = document.getElementById("i-"+k);
+            if (el) el.textContent = D[k];
+        });
+        document.getElementById("langBtn").textContent = lang==="en"?"TR":"EN";
+        document.getElementById("logoutBtn").textContent = t("logout_btn");
+        document.getElementById("loginNavBtn").textContent = t("login_nav");
+        if (currentData.length) {
+            renderPublicJobs(currentData);
+            if (currentRole==="USER") { userSearch(); renderMyApplications(); }
+            if (currentRole==="ADMIN") { renderAdminTable(currentData); renderCompanyRequests(); renderAdminApplications(); }
+            if (currentRole==="COMPANY") { renderCompanyRequests(); renderCompanySentRequests(); }
+        }
+    }
+    function toggleLang() { lang = lang==="en"?"tr":"en"; applyLang(); }
+
+    // ── AUTH / NAV ─────────────────────────────────────────────────────────────
+    function updateNav(role, label) {
+        const pill = document.getElementById("userPill");
+        const loginBtn = document.getElementById("loginNavBtn");
+        const regBtn = document.getElementById("registerNavBtn");
+        if (role) {
+            pill.classList.add("on");
+            loginBtn.style.display = "none";
+            regBtn.style.display = "none";
+            document.getElementById("userAvatar").textContent = label[0].toUpperCase();
+            document.getElementById("pillLabel").textContent = label;
+        } else {
+            pill.classList.remove("on");
+            loginBtn.style.display = "";
+            regBtn.style.display = "";
+        }
+    }
+
+    function logout() {
+        currentRole = null;
+        updateNav(null,"");
+        showHome();
+        showToast(t("msg_logout"));
+    }
+
+    function goToProfile() {
+        if (currentRole === "USER") { switchUserTab("profile"); }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadInternships();
+        renderCompanyRequests();
+        renderCompanySentRequests();
+    });
+
+    // ── MODALS ─────────────────────────────────────────────────────────────────
+    function openLoginModal()    { document.getElementById("loginModal").classList.add("active"); }
+    function closeLoginModal()   { document.getElementById("loginModal").classList.remove("active"); }
+    function openRegisterModal() { document.getElementById("registerModal").classList.add("active"); }
+    function closeRegisterModal(){ document.getElementById("registerModal").classList.remove("active"); }
+    function closeApplyModal()   { document.getElementById("applyModal").classList.remove("active"); pendingApplyJob=null; }
+
+    function switchTab(type) {
+        document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+        document.querySelectorAll(".lform").forEach(f=>f.classList.remove("active"));
+        document.getElementById(type+"Tab").classList.add("active");
+        document.getElementById(type+"LoginForm").classList.add("active");
+    }
+
+    // ── REGISTER ───────────────────────────────────────────────────────────────
+    function registerUser() {
+        const fn = document.getElementById("regFirstName").value.trim();
+        const ln = document.getElementById("regLastName").value.trim();
+        const un = document.getElementById("regUsername").value.trim();
+        const em = document.getElementById("regEmail").value.trim();
+        const pw = document.getElementById("regPassword").value;
+        const pw2= document.getElementById("regPassword2").value;
+        const uni= document.getElementById("regUniversity").value.trim();
+        const dep= document.getElementById("regDepartment").value.trim();
+
+        if (!fn||!ln||!un||!em||!pw) { showToast(t("msg_fill_all")); return; }
+        if (pw !== pw2) { showToast(t("msg_pw_mismatch")); return; }
+
+        // Save registered users in localStorage (frontend-only auth)
+        const users = JSON.parse(localStorage.getItem("registeredUsers")||"{}");
+        users[un] = { firstName:fn, lastName:ln, username:un, email:em, password:pw, university:uni, department:dep, cvName:"", bio:"", phone:"", gradYear:"" };
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+
+        closeRegisterModal();
+        openLoginModal();
+        showToast(t("msg_registered"));
+    }
+
+    // ── LOGIN ──────────────────────────────────────────────────────────────────
+    function loginAsUser() {
+        const u=document.getElementById("userUsername").value;
+        const p=document.getElementById("userPassword").value;
+        // Check registered users first
+        const users = JSON.parse(localStorage.getItem("registeredUsers")||"{}");
+        const found = users[u];
+        if ((found && found.password===p) || (u==="user"&&p==="1234")) {
+            currentRole="USER";
+            const label = found ? (found.firstName+" "+found.lastName) : "User";
+            localStorage.setItem("currentUser", u);
+            updateNav("USER", label);
+            closeLoginModal();
+            showPanel("userPanel");
+            userSearch();
+            loadProfileFromStorage(u);
+            renderMyApplications();
+            showToast(t("msg_login_user"));
+        } else showToast(t("msg_invalid"));
+    }
+
+    function loginAsAdmin() {
+        const u=document.getElementById("adminUsername").value;
+        const p=document.getElementById("adminPassword").value;
+        if (u==="admin"&&p==="1234") {
+            currentRole="ADMIN"; updateNav("ADMIN","Admin");
+            closeLoginModal(); showPanel("adminPanel"); loadInternships(); renderCompanyRequests(); renderAdminApplications(); showToast(t("msg_login_admin"));
+        } else showToast(t("msg_invalid"));
+    }
+
+    function loginAsCompany() {
+        const n=document.getElementById("companyNameLogin").value;
+        const e=document.getElementById("companyEmailLogin").value;
+        if (!n||!e) { showToast(t("msg_fill_comp")); return; }
+        localStorage.setItem("currentCompanyName",n);
+        localStorage.setItem("currentCompanyEmail",e);
+        currentRole="COMPANY"; updateNav("COMPANY",n);
+        closeLoginModal(); showPanel("companyPanel"); renderCompanySentRequests(); showToast(t("msg_login_comp"));
+    }
+
+    // ── PANELS ─────────────────────────────────────────────────────────────────
+    function showHome() {
+        currentRole=null; updateNav(null,"");
+        document.getElementById("homePage").style.display="block";
+        document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+        loadInternships();
+    }
+    function showPanel(id) {
+        document.getElementById("homePage").style.display="none";
+        document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+    }
+    function scrollToJobs() { document.getElementById("jobsSection").scrollIntoView({behavior:"smooth"}); }
+
+    function switchUserTab(tab) {
+        ["browse","myapps","profile"].forEach(t => {
+            document.getElementById("user-tab-"+t).style.display = t===tab?"block":"none";
+            document.getElementById("utab-"+t).classList.toggle("active", t===tab);
+        });
+        if (tab==="myapps") renderMyApplications();
+        if (tab==="profile") { const u=localStorage.getItem("currentUser"); if(u) loadProfileFromStorage(u); }
+    }
+
+    function switchAdminTab(tab) {
+        ["internships","requests","applications"].forEach(t => {
+            document.getElementById("admin-tab-"+t).style.display = t===tab?"block":"none";
+            document.getElementById("atab-"+t).classList.toggle("active", t===tab);
+        });
+        if (tab==="applications") renderAdminApplications();
+        if (tab==="requests") renderCompanyRequests();
+    }
+
+    // ── DATA ───────────────────────────────────────────────────────────────────
+    async function loadInternships() {
+        try {
+            const res = await fetch(baseUrl, { headers: { "Authorization": userAuth } });
+            currentData = await res.json();
+        } catch(e) { currentData=[]; }
+        renderPublicJobs(currentData); renderUserJobs(currentData); renderAdminTable(currentData); updateStats(currentData);
+    }
+
+    // ── RENDER: PUBLIC JOBS (no status badge) ──────────────────────────────────
+    function renderPublicJobs(data) {
+        const g=document.getElementById("publicJobsGrid"); g.innerHTML="";
+        if (!data.length) { g.innerHTML=`<div class="empty">${t("no_intern")}</div>`; return; }
+        data.forEach(item => { g.innerHTML+=`
+    <div class="job-card">
+        <div class="job-card-tag">${t("open_pos")}</div>
+        <h3>${item.position}</h3>
+        <p class="jc">🏢 ${item.companyName}</p>
+        <p class="jd">📅 ${item.applicationDate}</p>
+        <button class="btn-soft" onclick="openLoginModal()">${t("btn_login_req")}</button>
+    </div>`; });
+    }
+
+    // ── RENDER: USER JOBS (no status badge) ────────────────────────────────────
+    function renderUserJobs(data) {
+        const g=document.getElementById("userJobsGrid"); g.innerHTML="";
+        if (!data.length) { g.innerHTML=`<div class="empty">${t("no_intern")}</div>`; return; }
+        data.forEach(item => {
+            const alreadyApplied = hasApplied(item.id);
+            g.innerHTML+=`
+    <div class="job-card">
+        <div class="job-card-tag">${t("open_pos")}</div>
+        <h3>${item.position}</h3>
+        <p class="jc">🏢 ${item.companyName}</p>
+        <p class="jd">📅 ${item.applicationDate}</p>
+        ${alreadyApplied
+                ? `<button class="btn-ghost" disabled style="opacity:.5;cursor:not-allowed">✓ Applied</button>`
+                : `<button class="btn-success" onclick='openApplyModal(${JSON.stringify(item)})'>${t("btn_apply")}</button>`}
+    </div>`; });
+    }
+
+    // ── RENDER: ADMIN TABLE ────────────────────────────────────────────────────
+    function renderAdminTable(data) {
+        const tb=document.getElementById("adminTableBody"); tb.innerHTML="";
+        data.forEach(item => {
+            const hasStatus = item.status && item.status.trim();
+            const statusCell = hasStatus
+                ? `<span class="badge ${item.status}">${item.status}</span>`
+                : `<span style="color:var(--muted);font-size:15px;letter-spacing:1px">—</span>`;
+            tb.innerHTML+=`
+    <tr>
+        <td>#${item.id}</td><td>${item.companyName}</td><td>${item.position}</td>
+        <td>${item.applicationDate}</td>
+        <td>${statusCell}</td>
+        <td><div class="actions">
+            <button class="btn-warning" onclick='editInternship(${JSON.stringify(item)})'>${t("btn_edit")}</button>
+            <button class="btn-danger" onclick="deleteInternship(${item.id})">${t("btn_delete")}</button>
+        </div></td>
+    </tr>`; });
+    }
+
+    // ── RENDER: ADMIN APPLICATIONS ─────────────────────────────────────────────
+    async function renderAdminApplications() {
+        const tb = document.getElementById("adminApplicationsBody");
+        if (!tb) return;
+
+        tb.innerHTML = "";
+
+        try {
+            const response = await fetch("http://localhost:8080/api/applications", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Basic " + btoa("admin:1234")
+                }
+            });
+
+            const apps = await response.json();
+
+            if (!apps.length) {
+                tb.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align:center;color:var(--muted);padding:32px">
+                        ${t("no_apps")}
+                    </td>
+                </tr>
+            `;
+                return;
+            }
+
+            apps.forEach(app => {
+                tb.innerHTML += `
+                <tr>
+                    <td><strong style="color:var(--text)">${app.studentName || "—"}</strong></td>
+                    <td>${app.studentEmail || "—"}</td>
+                    <td>—</td>
+                    <td>${app.position || "—"}</td>
+                    <td>${app.companyName || "—"}</td>
+                    <td>${app.applicationDate || "—"}</td>
+                    <td>
+                        ${
+                    app.cvFileName
+                        ? `<span style="color:var(--green);font-size:12px">📄 ${app.cvFileName}</span>`
+                        : `<span style="color:var(--muted);font-size:12px">—</span>`
+                }
+                    </td>
+                    <td>
+                        <div style="display:flex;flex-direction:column;gap:8px">
+                            <span class="badge ${app.status || "APPLIED"}">${app.status || "APPLIED"}</span>
+
+                            <div class="actions">
+                                <button class="btn-warning" onclick="updateApplicationStatus(${app.id}, 'INTERVIEW')">
+                                    Interview
+                                </button>
+                                <button class="btn-success" onclick="updateApplicationStatus(${app.id}, 'OFFER')">
+                                    Offer
+                                </button>
+                                <button class="btn-danger" onclick="updateApplicationStatus(${app.id}, 'REJECTED')">
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            });
+
+        } catch (error) {
+            tb.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center;color:var(--red);padding:32px">
+                    Applications could not be loaded from backend.
+                </td>
+            </tr>
+        `;
+        }
+    }
+
+    async function updateApplicationStatus(id, status) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/applications/${id}/status?status=${status}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Basic " + btoa("admin:1234")
+                }
+            });
+
+            if (!response.ok) {
+                showToast("Status could not be updated.");
+                return;
+            }
+
+            await renderAdminApplications();
+            showToast("Application status updated.");
+
+        } catch (error) {
+            showToast("Backend connection error.");
+        }
+    }
+    async function updateApplicationStatus(id, status) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/applications/${id}/status?status=${status}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Basic " + btoa("admin:1234")
+                }
+            });
+
+            if (!response.ok) {
+                showToast("Status could not be updated.");
+                return;
+            }
+
+            await renderAdminApplications();
+            showToast("Application status updated.");
+
+        } catch (error) {
+            showToast("Backend connection error.");
+        }
+    }
+
+    // ── APPLY MODAL ────────────────────────────────────────────────────────────
+    function openApplyModal(job) {
+        pendingApplyJob = job;
+        const u = localStorage.getItem("currentUser");
+        const users = JSON.parse(localStorage.getItem("registeredUsers")||"{}");
+        const profile = getUserProfile(u);
+        const isProfileComplete = profile && profile.firstName && profile.email;
+
+        let html = `<div class="apply-section">
+            <h4>📋 POSITION</h4>
+            <div style="font-size:18px;font-weight:700;margin-bottom:4px">${job.position}</div>
+            <div style="color:var(--muted);font-size:13px">🏢 ${job.companyName}</div>
+        </div>`;
+
+        if (!isProfileComplete) {
+            html += `<div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:var(--r);padding:16px;font-size:14px;color:#fbbf24">
+                ⚠️ ${t("msg_fill_profile")}
+            </div>
+            <div class="apply-section" style="margin-top:12px">
+                <h4>YOUR INFORMATION</h4>
+                <div class="field-row" style="margin-bottom:10px">
+                    <input id="applyFirstName" placeholder="First Name *">
+                    <input id="applyLastName" placeholder="Last Name *">
+                </div>
+                <input id="applyEmail" type="email" placeholder="Email *" style="margin-bottom:10px">
+                <input id="applyPhone" placeholder="Phone" style="margin-bottom:10px">
+                <input id="applyUniversity" placeholder="University" style="margin-bottom:10px">
+                <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px">
+                    <div style="font-size:12px;color:var(--dim);margin-bottom:8px">📎 Upload CV</div>
+                    <input type="file" id="applyCvFile" accept=".pdf,.doc,.docx">
+                </div>
+            </div>`;
+        } else {
+            html += `<div class="apply-section">
+                <h4>👤 YOUR INFORMATION</h4>
+                <div class="info-row"><span>NAME</span><span>${profile.firstName} ${profile.lastName}</span></div>
+                <div class="info-row"><span>EMAIL</span><span>${profile.email}</span></div>
+                <div class="info-row"><span>PHONE</span><span>${profile.phone||"—"}</span></div>
+                <div class="info-row"><span>UNIVERSITY</span><span>${profile.university||"—"}</span></div>
+                <div class="info-row"><span>DEPARTMENT</span><span>${profile.department||"—"}</span></div>
+                <div class="info-row"><span>CV</span><span style="color:${profile.cvName?"var(--green)":"var(--muted)"}">
+                    ${profile.cvName?"📄 "+profile.cvName:t("no_cv")}</span></div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-top:0">
+                <div style="font-size:12px;color:var(--dim);margin-bottom:8px">📎 Attach CV for this application (optional)</div>
+                <input type="file" id="applyCvFile" accept=".pdf,.doc,.docx">
+            </div>`;
+        }
+
+        document.getElementById("applyModalTitle").textContent = `Apply — ${job.position}`;
+        document.getElementById("applyModalContent").innerHTML = html;
+        document.getElementById("applyModal").classList.add("active");
+    }
+
+    async function submitApplication() {
+        if (!pendingApplyJob) return;
+
+        const u = localStorage.getItem("currentUser");
+        const profile = getUserProfile(u);
+        const cvFile = document.getElementById("applyCvFile");
+
+        let studentName = "";
+        let studentEmail = "";
+        let cvFileName = "";
+
+        if (profile && profile.firstName) {
+            studentName = `${profile.firstName} ${profile.lastName || ""}`.trim();
+            studentEmail = profile.email || "";
+
+            if (profile.cvName) {
+                cvFileName = profile.cvName;
+            }
+
+            if (cvFile && cvFile.files[0]) {
+                cvFileName = cvFile.files[0].name;
+            }
+        } else {
+            const fn = document.getElementById("applyFirstName")?.value.trim();
+            const ln = document.getElementById("applyLastName")?.value.trim();
+            const em = document.getElementById("applyEmail")?.value.trim();
+
+            if (!fn || !em) {
+                showToast(t("msg_fill_req_fields"));
+                return;
+            }
+
+            studentName = `${fn} ${ln || ""}`.trim();
+            studentEmail = em;
+
+            if (cvFile && cvFile.files[0]) {
+                cvFileName = cvFile.files[0].name;
+            }
+        }
+
+        const applicationData = {
+            studentName: studentName,
+            studentEmail: studentEmail,
+            companyName: pendingApplyJob.companyName,
+            position: pendingApplyJob.position,
+            cvFileName: cvFileName
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/applications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic " + btoa("user:1234")
+                },
+                body: JSON.stringify(applicationData)
+            });
+
+            if (!response.ok) {
+                showToast("Application could not be saved to database.");
+                return;
+            }
+
+            closeApplyModal();
+
+            renderUserJobs(currentData.filter(i => {
+                const c = document.getElementById("userCompanySearch").value.toLowerCase();
+                const p = document.getElementById("userPositionSearch").value.toLowerCase();
+
+                return i.companyName.toLowerCase().includes(c)
+                    && i.position.toLowerCase().includes(p);
+            }));
+
+            await renderMyApplications();
+            await renderAdminApplications();
+
+            showToast(t("msg_apply") + " " + applicationData.companyName + " — " + applicationData.position);
+
+        } catch (error) {
+            showToast("Backend connection error.");
+        }
+    }
+
+    function hasApplied(internshipId) {
+        const u = localStorage.getItem("currentUser");
+        const apps = getAllApplications();
+        return apps.some(a => a.internshipId === internshipId && a.username === (u||"guest"));
+    }
+
+    function getAllApplications() {
+        return JSON.parse(localStorage.getItem("userApplications")||"[]");
+    }
+
+    async function renderMyApplications() {
+        const el = document.getElementById("myApplicationsList");
+        if (!el) return;
+
+        const u = localStorage.getItem("currentUser");
+        const profile = getUserProfile(u);
+
+        if (!profile || !profile.email) {
+            el.innerHTML = `<div class="empty">${t("no_apps")}</div>`;
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/api/applications/student?email=${profile.email}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Basic " + btoa("user:1234")
+                    }
+                }
+            );
+
+            const apps = await response.json();
+
+            if (!apps.length) {
+                el.innerHTML = `<div class="empty">${t("no_apps")}</div>`;
+                return;
+            }
+
+            el.innerHTML = "";
+
+            apps.forEach(app => {
+                el.innerHTML += `
+                <div class="app-item">
+                    <div class="app-item-left">
+                        <h4>${app.position}</h4>
+                        <p>🏢 ${app.companyName} · 📅 ${app.applicationDate}</p>
+                        ${app.cvFileName ?
+                    `<p style="color:var(--green);font-size:12px;margin-top:3px">
+                                📄 ${app.cvFileName}
+                             </p>` : ""}
+                    </div>
+                    <td>
+    <div style="display:flex;flex-direction:column;gap:8px">
+        <span class="badge ${app.status || "APPLIED"}">${app.status || "APPLIED"}</span>
+
+        <div class="actions">
+            <button class="btn-warning" onclick="updateApplicationStatus(${app.id}, 'INTERVIEW')">
+                Interview
+            </button>
+            <button class="btn-success" onclick="updateApplicationStatus(${app.id}, 'OFFER')">
+                Offer
+            </button>
+            <button class="btn-danger" onclick="updateApplicationStatus(${app.id}, 'REJECTED')">
+                Reject
+            </button>
+        </div>
+    </div>
+</td>
+                </div>
+            `;
+            });
+
+        } catch (error) {
+            el.innerHTML = `<div class="empty">Applications could not be loaded.</div>`;
+        }
+    }
+    // ── PROFILE ────────────────────────────────────────────────────────────────
+    function getUserProfile(username) {
+        const profiles = JSON.parse(localStorage.getItem("userProfiles")||"{}");
+        // Also check registered users for base info
+        const users = JSON.parse(localStorage.getItem("registeredUsers")||"{}");
+        const reg = users[username]||{};
+        const saved = profiles[username]||{};
+        return { ...reg, ...saved };
+    }
+
+    function loadProfileFromStorage(username) {
+        const p = getUserProfile(username);
+        if (!p) return;
+        if (p.firstName) document.getElementById("profileFirstName").value = p.firstName;
+        if (p.lastName) document.getElementById("profileLastName").value = p.lastName;
+        if (p.email) document.getElementById("profileEmail").value = p.email;
+        if (p.phone) document.getElementById("profilePhone").value = p.phone;
+        if (p.university) document.getElementById("profileUniversity").value = p.university;
+        if (p.department) document.getElementById("profileDepartment").value = p.department;
+        if (p.gradYear) document.getElementById("profileGradYear").value = p.gradYear;
+        if (p.bio) document.getElementById("profileBio").value = p.bio;
+        updateProfilePreview();
+        updateCvStatus(p.cvName||"");
+    }
+
+    function saveProfile() {
+        const u = localStorage.getItem("currentUser")||"user";
+        const profiles = JSON.parse(localStorage.getItem("userProfiles")||"{}");
+        profiles[u] = {
+            firstName: document.getElementById("profileFirstName").value.trim(),
+            lastName: document.getElementById("profileLastName").value.trim(),
+            email: document.getElementById("profileEmail").value.trim(),
+            phone: document.getElementById("profilePhone").value.trim(),
+            university: document.getElementById("profileUniversity").value.trim(),
+            department: document.getElementById("profileDepartment").value.trim(),
+            gradYear: document.getElementById("profileGradYear").value.trim(),
+            bio: document.getElementById("profileBio").value.trim(),
+            cvName: profiles[u]?.cvName||"",
+        };
+        localStorage.setItem("userProfiles", JSON.stringify(profiles));
+        const fn = profiles[u].firstName;
+        const ln = profiles[u].lastName;
+        if (fn) {
+            const label = fn + (ln?" "+ln:"");
+            document.getElementById("pillLabel").textContent = label;
+            document.getElementById("userAvatar").textContent = fn[0].toUpperCase();
+        }
+        updateProfilePreview();
+        showToast(t("msg_profile_saved"));
+    }
+
+    function handleCVUpload() {
+        const file = document.getElementById("cvFile").files[0];
+        if (!file) return;
+        const u = localStorage.getItem("currentUser")||"user";
+        const profiles = JSON.parse(localStorage.getItem("userProfiles")||"{}");
+        if (!profiles[u]) profiles[u]={};
+        profiles[u].cvName = file.name;
+        localStorage.setItem("userProfiles", JSON.stringify(profiles));
+        updateCvStatus(file.name);
+        showToast(t("msg_cv_loaded")+" "+file.name);
+    }
+
+    function updateCvStatus(cvName) {
+        const el = document.getElementById("cvStatus"); if(!el) return;
+        if (cvName) {
+            el.className="cv-status uploaded";
+            el.textContent="✅ "+cvName;
+        } else {
+            el.className="cv-status";
+            el.textContent=t("no_cv");
+        }
+    }
+
+    function updateProfilePreview() {
+        const fn = document.getElementById("profileFirstName")?.value||"";
+        const ln = document.getElementById("profileLastName")?.value||"";
+        const em = document.getElementById("profileEmail")?.value||"";
+        const ph = document.getElementById("profilePhone")?.value||"";
+        const uni= document.getElementById("profileUniversity")?.value||"";
+        const dep= document.getElementById("profileDepartment")?.value||"";
+        const gy = document.getElementById("profileGradYear")?.value||"";
+        const bio= document.getElementById("profileBio")?.value||"";
+        const u = localStorage.getItem("currentUser")||"user";
+        const profiles = JSON.parse(localStorage.getItem("userProfiles")||"{}");
+        const cvName = profiles[u]?.cvName||"";
+
+        const full = fn+" "+ln;
+        document.getElementById("profileNameDisplay").textContent = full.trim()||"—";
+        document.getElementById("profileAvatarLg").textContent = fn?fn[0].toUpperCase():"U";
+
+        const fields = [fn,ln,em,ph,uni,dep,gy,bio,cvName];
+        const filled = fields.filter(f=>f.trim()).length;
+        const pct = Math.round(filled/fields.length*100);
+        document.getElementById("profileProgress").style.width=pct+"%";
+        document.getElementById("profilePct").textContent=pct+"%";
+    }
+
+    // ── STATS ──────────────────────────────────────────────────────────────────
+    function updateStats(data) {
+        const tot=data.length, app=data.filter(i=>i.status==="APPLIED").length,
+            itv=data.filter(i=>i.status==="INTERVIEW").length, off=data.filter(i=>i.status==="OFFER").length;
+        ["heroTotal","adminTotal"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=tot;});
+        ["heroApplied","adminApplied"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=app;});
+        ["heroInterview","adminInterview"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=itv;});
+        ["heroOffer","adminOffer"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=off;});
+    }
+
+    // ── ADMIN CRUD ─────────────────────────────────────────────────────────────
+    async function saveInternship() {
+        const id=document.getElementById("adminInternshipId").value;
+        const cn=document.getElementById("adminCompanyName").value.trim();
+        const pos=document.getElementById("adminPosition").value.trim();
+        if (!cn||!pos) { showToast(t("msg_fill_all")); return; }
+        const today=new Date().toISOString().split("T")[0];
+        const body={companyName:cn, position:pos, applicationDate:today, status:"APPLIED"};
+        if (id) {
+            const status=document.getElementById("adminStatus").value;
+            if (status) body.status=status;
+        }
+        const res=await fetch(id?`${baseUrl}/${id}`:baseUrl,{method:id?"PUT":"POST",headers:{"Content-Type":"application/json","Authorization":adminAuth},body:JSON.stringify(body)});
+        if (res.ok) { clearAdminForm(); await loadInternships(); showToast(t("msg_saved")); }
+        else {
+            const errText = await res.text().catch(()=>"");
+            showToast(t("msg_save_fail")+" ("+res.status+")");
+            console.error("Save failed:", res.status, errText);
+        }
+    }
+
+    function editInternship(item) {
+        document.getElementById("adminInternshipId").value=item.id;
+        document.getElementById("adminCompanyName").value=item.companyName;
+        document.getElementById("adminPosition").value=item.position;
+        document.getElementById("adminStatus").value=item.status;
+        document.getElementById("adminFormTitle").textContent = lang==="tr" ? "Stajı Güncelle — #"+item.id : "Update Internship — #"+item.id;
+        switchAdminTab("internships");
+        window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    async function deleteInternship(id) {
+        const res=await fetch(`${baseUrl}/${id}`,{method:"DELETE",headers:{"Authorization":adminAuth}});
+        if (res.ok) { await loadInternships(); showToast(t("msg_deleted")); }
+        else showToast(t("msg_del_fail"));
+    }
+
+    function clearAdminForm() {
+        ["adminInternshipId","adminCompanyName","adminPosition"].forEach(id=>document.getElementById(id).value="");
+        document.getElementById("adminStatus").value="";
+        document.getElementById("adminFormTitle").textContent = lang==="tr" ? "Yeni Staj Ekle" : "Add New Internship";
+    }
+
+    // ── SEARCH ─────────────────────────────────────────────────────────────────
+    function publicSearch() {
+        const c=document.getElementById("publicCompanySearch").value.toLowerCase();
+        const p=document.getElementById("publicPositionSearch").value.toLowerCase();
+        renderPublicJobs(currentData.filter(i=>i.companyName.toLowerCase().includes(c)&&i.position.toLowerCase().includes(p)));
+    }
+
+    function userSearch() {
+        const c=document.getElementById("userCompanySearch").value.toLowerCase();
+        const p=document.getElementById("userPositionSearch").value.toLowerCase();
+        renderUserJobs(currentData.filter(i=>i.companyName.toLowerCase().includes(c)&&i.position.toLowerCase().includes(p)));
+    }
+
+    // ── COMPANY REQUESTS ───────────────────────────────────────────────────────
+    function sendCompanyRequest() {
+        const cn=document.getElementById("requestCompanyName").value;
+        const pos=document.getElementById("requestPosition").value;
+        const desc=document.getElementById("requestDescription").value;
+        if (!cn||!pos||!desc) { showToast(t("msg_fill_all")); return; }
+        const reqs=getCompanyRequests();
+        reqs.push({id:Date.now(),companyName:cn,position:pos,description:desc,status:"PENDING"});
+        localStorage.setItem("companyRequests",JSON.stringify(reqs));
+        ["requestCompanyName","requestPosition","requestDescription"].forEach(id=>document.getElementById(id).value="");
+        renderCompanySentRequests(); renderCompanyRequests(); showToast(t("msg_req_sent"));
+    }
+
+    function getCompanyRequests() { return JSON.parse(localStorage.getItem("companyRequests"))||[]; }
+
+    function renderCompanyRequests() {
+        const c=document.getElementById("companyRequestsList"); if (!c) return;
+        const reqs=getCompanyRequests().filter(r=>r.status==="PENDING");
+        if (!reqs.length) { c.innerHTML=`<div class="empty">${t("no_req")}</div>`; return; }
+        c.innerHTML="";
+        reqs.forEach(req=>{ c.innerHTML+=`
+    <div class="creq">
+        <h3>${req.position}</h3><p><strong>${req.companyName}</strong></p><p>${req.description}</p>
+        <div class="actions" style="margin-top:10px">
+            <button class="btn-success" onclick="approveCompanyRequest(${req.id})">${t("btn_approve")}</button>
+            <button class="btn-danger" onclick="rejectCompanyRequest(${req.id})">${t("btn_reject")}</button>
+        </div>
+    </div>`; });
+    }
+
+    async function approveCompanyRequest(id) {
+        const reqs=getCompanyRequests(); const req=reqs.find(r=>r.id===id); if (!req) return;
+        const res=await fetch(baseUrl,{method:"POST",headers:{"Content-Type":"application/json","Authorization":adminAuth},body:JSON.stringify({companyName:req.companyName,position:req.position,status:"APPLIED"})});
+        if (res.ok) { req.status="APPROVED"; localStorage.setItem("companyRequests",JSON.stringify(reqs)); await loadInternships(); renderCompanyRequests(); showToast(t("msg_approved")); }
+        else showToast(t("msg_app_fail"));
+    }
+
+    function rejectCompanyRequest(id) {
+        const reqs=getCompanyRequests(); const req=reqs.find(r=>r.id===id);
+        if (req) { req.status="REJECTED"; localStorage.setItem("companyRequests",JSON.stringify(reqs)); renderCompanyRequests(); showToast(t("msg_rejected")); }
+    }
+
+    function renderCompanySentRequests() {
+        const c=document.getElementById("companySentRequests"); if (!c) return;
+        const reqs=getCompanyRequests();
+        if (!reqs.length) { c.innerHTML=`<div class="empty">${t("no_sent")}</div>`; return; }
+        c.innerHTML="";
+        reqs.forEach(req=>{ const bc=req.status==="APPROVED"?"OFFER":req.status==="REJECTED"?"REJECTED":"APPLIED";
+            c.innerHTML+=`<div class="creq"><h3>${req.position}</h3><p><strong>${req.companyName}</strong></p><p>${req.description}</p><span class="badge ${bc}">${req.status}</span></div>`; });
+    }
+
+    // ── TOAST ──────────────────────────────────────────────────────────────────
+    function showToast(msg) {
+        const el=document.getElementById("toast"); el.textContent=msg; el.style.display="block";
+        setTimeout(()=>{ el.style.display="none"; },2800);
+    }
+</script>
+</body>
+</html>
