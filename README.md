@@ -14,7 +14,6 @@ Spring Boot kullanılarak geliştirilmiş tam kapsamlı bir Staj Takip Sistemidi
 * Şirket veya Pozisyona Göre Staj İlanı Arama
 * Staj İlanlarına Başvuru Yapma
 * Yapılan Başvuruları Görüntüleme
-* Başvuru Durumlarını Takip Etme
 
 ### Yönetici Özellikleri
 
